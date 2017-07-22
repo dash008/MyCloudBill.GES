@@ -1,0 +1,128 @@
+{% extends "controlpanel.html" %}
+{% load bootstrap %}
+{% load crispy_forms_tags %}
+
+
+{% block title%}
+            <h2 class="sub-header"> Cancelar Solicitudes</h2>
+{% endblock%}
+
+{% block content%}
+
+{% if messages %}                        
+                {% for message in messages %}
+                {% if 'error' in message.tags %}                
+                    <div class="alert alert-danger">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        {{ message }}                
+                    </div>
+                {%  else %}                
+                    <div class="alert alert-{{ message.tags }}">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        {{ message }}
+                    </div>
+                {%endif%}
+                {% endfor %}    
+{% endif %}
+
+<div class="row">
+        <div class="col-xs-4"> </div>
+        <div class="col-md-5">
+                <form action= "." method="POST" class="navbar-form navbar-left" role="search" >
+                	{% csrf_token %} 
+                    {% if not solicitud.instance %}                    
+                	 <center>
+                            {{form |crispy}}
+                    	    <button type="submit" class="btn btn-default" name="search_btn">Buscar</button>
+                    </center>
+                     {%endif%} 
+                </form>
+    </div>
+        <div class="col-xs-4"></div>         
+</div>  
+<div class="col-xs-12" style="height:50px;"></div>
+<div class="row">
+        <div class="col-xs-1"> </div>
+        <div class="col-lg-9"> 
+	<table class="table table-condensed">
+		<tr>
+			<th class="text-center"> Id </th>
+        	<th class="text-center">Plataforma </th>
+ 			<th class="text-center">Sistema Op. </th>
+ 			<th class="text-center">Base de Datos </th>
+ 			<th class="text-center">Procesador </th>
+ 			<th class="text-center">Vel. Procesador </th>
+ 			<th class="text-center">Memoria </th>
+ 			<th class="text-center">Almacenam. </th>
+ 			<th class="text-center">Backup Img. </th>	
+        			<th class="text-center">Estado </th>
+    		</tr>
+    		{% for item in query_results %}
+    		<tr> 
+    			<td class="text-center">{{item.id}}</td>
+        			<td class="text-center">{{ item.plataforma }}</td>
+        			<td class="text-center">{{ item.sistemaoperativo }}</td>
+        			<td class="text-center">{{item.basededatos}}</td>
+        			<td class="text-center">{{item.procesador}}</td>
+        			<td class="text-center">{{item.procesamiento}}</td>
+        			<td class="text-center">{{item.memoria}}</td>
+        			<td class="text-center">{{item.almacenamiento}}</td>
+        			<td class="text-center">{{item.backupimagenes}}</td>
+        			<td class="text-center">{{item.estado}}</td>
+    		</tr>
+    		{% endfor %}
+	</table>
+	</div>
+
+        <div class="col-xs-1"> </div>         
+</div> 
+<div class="col-xs-12" style="height:50px;"></div>
+<div class="row">
+        <div class="col-xs-4"> </div>
+        <div class="col-md-5">
+<form action= "" method="POST">
+                {% csrf_token %} 	
+	<button type="submit" class="btn btn-primary" name="remove_btn" >Eliminar</button>
+	<button type="submit" class="btn btn-danger" name="cancel_btn">Cancelar</button>
+</form>
+</div>
+
+
+{%endblock%}
+
+{% block sidebar%}
+<div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li ><a href="/controlpanel">Control Panel <span class="sr-only">(current)</span></a></li>
+            {% for group in user.groups.all %}
+                {% if group.name == 'CoordinadorSI' %}
+                        <li><a href="/registrosolicitud">Realizar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                         <li class="active" ><a href="/eliminarsolicitud">Cancelar Solicitudes </a></li>
+                         <li><a href="/nuevorecurso">Agregar recursos</a></li>
+                {% elif group.name == 'ArqSoluciones' %}
+                        <li><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                        <li><a href="/registrousuario">Registrar Usuario</a></li>
+                        <li><a href=#>Revisar Facturas</a></li>
+                {%elif group.name == 'JefeInfraestructura'%}          
+                        <li><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                        <!-- <li><a href="/registrousuario">Registrar Usuario</a></li> -->
+                        <li><a href="/revisarfactura">Revisar Facturas</a></li>
+                {%elif group.name == 'JefeTI'%}
+                        <li><a href="/registrosolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                        <li><a href="/registrousuario">Registrar Usuario</a></li>
+                        <li><a href=#>Revisar Facturas</a></li>
+                {%elif group.name == 'LiderInfraestructura'%}
+                        <li><a href="/registrosolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                        <li><a href="/registrousuario">Registrar Usuario</a></li>
+                        <li><a href=#>Revisar Facturas</a></li>
+                {% endif %}
+            {% endfor %}         
+            
+          </ul>          
+        </div> 
+{%endblock%}

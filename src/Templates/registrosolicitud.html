@@ -1,0 +1,163 @@
+{% extends "controlpanel.html" %}
+{% load bootstrap %}
+{% load crispy_forms_tags %}
+
+
+
+{% block sidebar%}
+<div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li ><a href="/controlpanel">Control Panel <span class="sr-only">(current)</span></a></li>
+            {% for group in user.groups.all %}
+                {% if group.name == 'CoordinadorSI' %}
+                        <li class="active"><a href="/registrosolicitud">Realizar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes <span class="label label-info">{{query_results}}</a></li>
+                         <li><a href="/eliminarsolicitud">Cancelar Solicitudes</a></li>
+                         <li><a href="/nuevorecurso">Agregar recursos</a></li>
+                {% elif group.name == 'ArqSoluciones' %}
+                        <li><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes <span class="label label-info">{{query_results}}</span></a></li>
+                        <li><a href="/registrousuario">Registrar Usuario</a></li>
+                        <li><a href=#>Revisar Facturas</a></li>
+                {%elif group.name == 'JefeInfraestructura'%}          
+                        <li><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                        <!-- <li><a href="/registrousuario">Registrar Usuario</a></li> -->
+                        <li><a href="/facturamensualestimada">Revisar Facturas</a></li>
+                {%elif group.name == 'JefeTI'%}
+                        <li><a href="/registrosolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                        <li><a href="/facturamensualestimada">Registrar Usuario</a></li>
+                        <li><a href=#>Revisar Facturas</a></li>
+                {%elif group.name == 'LiderInfraestructura'%}
+                        <li><a href="/registrosolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                        <li><a href="/registrousuario">Registrar Usuario</a></li>
+                        <li><a href=#>Revisar Facturas</a></li>
+                {% endif %}
+            {% endfor %}         
+            
+          </ul>          
+        </div> 
+{%endblock%}
+
+{% block title%}
+            <h2 class="sub-header"> Formulario de Solicitud</h2>
+{% endblock%}
+
+
+{% block content%}
+
+{% if messages %}                        
+                {% for message in messages %}
+                {% if 'error' in message.tags %}                
+                    <div class="alert alert-danger">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        {{ message }}                
+                    </div>
+                {%  else %}                
+                    <div class="alert alert-{{ message.tags }}">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        {{ message }} <b>{{ numero_solicitud }}</b>
+                    </div>
+                {%endif%}
+                {% endfor %}    
+{% endif %}
+
+<div class="row">
+        <div class="col-xs-3"> </div>
+        <div class="col-xs-6"> 
+        	<div class="form-group">
+		<form action="" method="POST">
+		    	{% csrf_token %}
+
+		    	{{form.plataforma |as_crispy_field }}
+		    	{{ form.sistemaoperativo |as_crispy_field }}
+		    	{{ form.basededatos |as_crispy_field }}
+		    	{{ form.procesador |as_crispy_field}}
+		    	{{ form.procesamiento |as_crispy_field}}
+		    	{{form.numeroprocesadores| as_crispy_field}}
+		    	{{ form.memoria |as_crispy_field}}
+		    	{{ form.almacenamiento|as_crispy_field }}
+		    	{{ form.backupimagenes|as_crispy_field }}
+		    	{{ form.tiempodeuso|as_crispy_field }}
+		    	{{ form.cantidaddeusuarios|as_crispy_field}}
+		    	{{ form.justificacion|as_crispy_field}}
+
+                                                <div class="col-xs-12" style="height: 30px;"></div>
+                                                
+                                                <h3 class="text-info"> Distribucion </h3> 
+                                                <table class="table table-condensed table-bordered table-striped table-hover" width="300" >
+                                                            <tr>    
+                                                                    <th width="30%" class="text-center"> Grupo </th>                                                
+                                                                    <th class="text-center">Cantidad Usuarios</th>                        
+                                                            </tr>
+                                                            <tr>    
+                                                                    <th width="30%" class="text-center"> Financiero </th>                                                
+                                                                    <td class="text-center">{{distribucion_form.financiero|as_crispy_field}}</td>                        
+                                                            </tr>
+                                                            <tr>    
+                                                                    <th width="30%" class="text-center"> Sugiro </th>                                                
+                                                                    <td class="text-center">{{distribucion_form.sugiro|as_crispy_field}}</td>                        
+                                                            </tr>
+                                                            <tr>    
+                                                                    <th width="30%" class="text-center"> Vivienda </th>                                                
+                                                                    <td class="text-center">{{distribucion_form.vivienda|as_crispy_field}}</td>                        
+                                                            </tr>
+                                                            <tr>    
+                                                                    <th width="30%" class="text-center"> MP </th>                                                
+                                                                    <td class="text-center">{{distribucion_form.mp|as_crispy_field}}</td>                        
+                                                            </tr>
+                                                            <tr>    
+                                                                    <th width="30%" class="text-center"> EPS </th>                                                
+                                                                    <td class="text-center">{{distribucion_form.eps|as_crispy_field}}</td>                        
+                                                            </tr>
+                                                            <tr>    
+                                                                    <th width="30%" class="text-center"> EME </th>                                                
+                                                                    <td class="text-center">{{distribucion_form.eme|as_crispy_field}}</td>                        
+                                                            </tr>
+                                                            <tr>    
+                                                                    <th width="30%" class="text-center"> Homecare </th>                                                
+                                                                    <td class="text-center">{{distribucion_form.homecare|as_crispy_field}}</td>                        
+                                                            </tr>
+                                                            <tr>    
+                                                                    <th width="30%" class="text-center"> Seguros </th>                                                
+                                                                    <td class="text-center">{{distribucion_form.seguros|as_crispy_field}}</td>                        
+                                                            </tr>
+                                                            <tr>    
+                                                                    <th width="30%" class="text-center"> Solidaridad </th>                                                
+                                                                    <td class="text-center">{{distribucion_form.solidaridad|as_crispy_field}}</td>                        
+                                                            </tr>
+                                                            <tr>    
+                                                                    <th  class="text-center"> Vida en Plenitud </th>                                                
+                                                                    <td width="30%" class="text-center">{{distribucion_form.vida_en_plenitud|as_crispy_field}}</td>                        
+                                                            </tr>
+                                                            <tr>    
+                                                                    <th  class="text-center"> Centro vacacional</th>                                                
+                                                                    <td width="30%" class="text-center">{{distribucion_form.centro_vacacional|as_crispy_field}}</td>                        
+                                                            </tr>
+                                                            <tr>    
+                                                                    <th  class="text-center"> Agencia de Viajes </th>                                                
+                                                                    <td width="30%" class="text-center">{{distribucion_form.agencia_viajes|as_crispy_field}}</td>                        
+                                                            </tr>
+                                                            <tr>    
+                                                                    <th width="30%" class="text-center"> Gremial </th>                                                
+                                                                    <td class="text-center">{{distribucion_form.gremial|as_crispy_field}}</td>                        
+                                                            </tr>
+
+                                                </table>
+
+
+		    	<center> 
+		    		<input class="btn btn-primary" type="submit" value="Grabar Perm." name="save_def" />
+		    		<input class="btn btn-info" type="submit" value="Grabar Temp." name="save_temp"  /> 
+		    		<input class="btn btn-danger" type="submit" value="Cancelar" />  
+		    	</center>
+		</form>
+	</div>
+	 </div>
+
+        <div class="col-xs-3"> </div>         
+</div>   
+
+{%endblock%}

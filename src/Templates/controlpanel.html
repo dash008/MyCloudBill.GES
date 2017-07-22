@@ -1,0 +1,185 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Panel de Control</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.css' %}"rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/dashboard.css' %}"rel="stylesheet">
+
+    <link href="{% static 'css/datetimepicker.css' %}" rel="stylesheet" />
+    <!-- Morris Charts CSS -->
+    <link href="css/plugins/morris.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+
+  
+    {% include 'navbarcontrolpanel.html' %}
+
+    <div class="container-fluid">
+      <div class="row">
+        
+    {%block sidebar%}
+      <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="/controlpanel">Control Panel <span class="sr-only">(current)</span></a></li>
+            {% for group in user.groups.all %}
+                {% if group.name == 'CoordinadorSI' %}
+                        <li><a href="/registrosolicitud">Realizar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                         <li><a href="/eliminarsolicitud">Eliminar Solicitudes</a></li>
+                {% elif group.name == 'ArqSoluciones' %}
+                        <li><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                        <li><a href="/registrousuario">Registrar Usuario</a></li>
+                        <li><a href=#>Revisar Facturas</a></li>
+                {%elif group.name == 'JefeInfraestructura'%}          
+                        <li><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                        <li><a href="/registrousuario">Registrar Usuario</a></li>
+                        <li><a href="/facturamensualestimada">Revisar Facturas</a></li>
+                {%elif group.name == 'JefeTI'%}
+                       <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>  
+                        <li><a href="/revisarfactura">Revisar Facturas</a></li>
+                        <li><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+                {%elif group.name == 'LiderInfraestructura'%}
+                        <li><a href="/registrosolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                        <li><a href="/registrousuario">Registrar Usuario</a></li>
+                        <li><a href=#>Revisar Facturas</a></li>
+                {% endif %}
+            {% endfor %}         
+            
+          </ul>          
+        </div> 
+    {%endblock%} 
+    
+
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header">
+            
+          </h1> 
+          
+          {% block title%}
+            <h2 class="sub-header"> Bienvenido</h2>
+          {% endblock%}
+
+          {% block content%}
+          
+        <div id="container" style="width: 650px; height: 400px; margin: 0 auto"></div>
+
+        {% if messages %}
+          <div class="col-md-4"> </div>
+                <div class="alert alert-success">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        <ul class="messages">
+                                {% for message in messages %}
+                                       <center>
+                                               <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                                               {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                                               {{ message }} <strong>{{numero_solicitud}}</strong>
+                                               </p>
+                                       </center>
+                                {% endfor %}
+                        </ul>
+                </div>
+        <div class="col-md-4"> </div>
+        {% endif %}
+
+
+          {% endblock %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src=" {% static 'js/bootstrap.js' %}"></script>   
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>
+    <script src="{%static 'js/chart.js' %}"></script>
+    <script  src="{% static 'js/bootstrap-datetimepicker.js' %}"></script>
+
+    <script src="{% static 'js/highcharts.js' %}"></script>
+    <script src="{% static 'js/exporting.js' %}"></script>
+   <script type="text/javascript">
+       $(function () {
+        $('#container').highcharts({
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Plataformas mas pedidas'
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                categories: [
+                    {% if my_group = "['CoordinadorSI']" %}
+                    'Pedidas por el usuario'
+                    {% else %}
+                     'Pedidos Globales'
+                    {% endif %}
+                ]
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Solicitudes'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: [{
+                name: 'Windows',
+                data: [{{ data.0 }}]
+
+            }, {
+                name: 'Linux',
+                data: [{{ data.1 }}]
+
+            }, {
+                name: 'AIX',
+                data: [{{ data.2 }}]
+
+            }, {
+                name: 'I5',
+                data: [{{ data.3 }}]
+
+            }]
+        });
+    });
+   </script>
+
+  </body>
+</html>

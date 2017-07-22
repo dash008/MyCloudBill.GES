@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+
+
+{% block content %}
+
+{% if form.errors %}       
+
+	<p class="error">Lo sentimos, la contraseña y el nombre de usuario no son validos</p>  
+
+{% endif %} 
+
+
+
+<div class="row"> 
+	<div class="col-xs-3"> </div>
+		<div class="col-xs-6"> 
+
+			<form id = "login_form" method="post" action="">
+			{% csrf_token %}
+			
+		            	<p><input type="text" class= "form-control" name="username" value="" size="15" placeholder="Username" /></p>
+		            
+		             	<p><input type="password" class= "form-control" name="password" value="" size="15" placeholder="Password"></p>         
+
+		            	<input class="btn btn-default" type="submit" value="Ingresar" />
+		        	</form>
+		</div>
+        <div class="col-xs-3"> </div>         
+</div>   
+
+{% endblock %}
+
+

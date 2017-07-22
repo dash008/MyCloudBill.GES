@@ -1,0 +1,169 @@
+{% extends "controlpanel.html" %}
+{% load bootstrap %}
+{% load crispy_forms_tags %}
+
+{% block title%}
+            <h2 class="sub-header">Factura en Linea Base</h2>
+{% endblock%}
+
+{% block sidebar%}
+	<div class="col-sm-3 col-md-2 sidebar">
+	          <ul class="nav nav-sidebar">
+		<li><a href="/controlpanel">Control Panel <span class="sr-only">(current)</span></a></li>
+              		<li ><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+              		<li><a href="#" id="btn-1" data-toggle="collapse" data-target="#submenu1" aria-expanded="false">Revisar Facturas</a>
+		      <ul class="nav collapse" id="submenu1" role="menu" aria-labelledby="btn-1">
+		        <li  class="active" ><a href="/registronegociacion" style="margin-left:20px;" >Registrar datos negociacion</a></li>
+		        <li><a href="#" style="margin-left:20px;">Factura en linea base</a></li>
+		        <li><a href="#" style="margin-left:20px;">Factura mensual estimada</a></li>
+		        <li><a href="#" style="margin-left:20px;">Factura mensual real</a></li>
+		      </ul>
+		</li>                    	
+                    	<li><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+                    	
+	          </ul> 
+
+        	</div>
+ {%endblock%}
+
+ {%block content%}
+
+ <div class="row">
+        <div class="col-xs-4"> </div>
+        <div class="col-md-5">
+                <form action= "." method="POST" class="navbar-form navbar-left" role="search" >
+                	{% csrf_token %} 
+                	{% if not solicitud_form.instance %}
+                                {{form |crispy}}                                
+                	   	<button type="submit" class="btn btn-default" name="search_btn">Generar</button>
+                    {%endif%} 
+                </form>
+    	</div>
+        <div class="col-xs-4"></div>         
+</div> 
+
+<div class="col-xs-12" style="height:50px;"></div>
+
+<div class="row">
+        <div class="col-xs-3"> </div>
+        <div class="col-xs-8"> 
+		<form action="" method="POST">
+		    	{% csrf_token %}
+	            {% if solicitud_form.instance %}
+	            
+				<table class="table  table-condensed table-bordered table-striped table-hover" width="900">
+	        		<tr>
+	        			<td class="text-center"> Periodo Facturado </th>
+	        			<td class="text-center"> {{negociacion.date}} </th>
+	        		</tr>
+	        	</table>
+
+		    	<table class="table  table-condensed table-bordered table-striped table-hover" width="900">
+	        		<tr>
+	        			<th class="text-center"> Fecha de Negociacion</th>
+	        			<td class="text-center"> {{negociacion.date}} </th>
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center"> Prooveedor</th>
+	        			<td class="text-center"> {{negociacion.proovedor}} </th>	        			
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center"> Cargo total a 12 meses</th>
+	        			<td class="text-center"> {{negociacion.cargototal}} </th>	        			
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center"> Cargo Inicial</th>
+	        			<td class="text-center"> {{negociacion.cargoinicial}} </th>	        			
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center"> Cargo mes LB</th>
+	        			<td class="text-center"> {{negociacion.cargomeslineabase}} </th>	        			
+	        		</tr>
+	        		<tr>
+	        			<th class="bg-primary text-center"> Total a Pagar Mes</th>
+	        			<td class="bg-primary text-center"> 8261 </th>	        			
+	        		</tr>
+        		</table>
+
+        		<table class="table  table-condensed table-bordered table-striped table-hover" width="900">
+	        		<tr>
+	        			<th class="text-center"> Empresa </th>
+	        			<th class="text-center"> Total a Pagar </th>	        			
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center"> Financiero</th>
+	        			<td class="text-center"> {{pagos.0}} </th>
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center"> Sugiro</th>
+	        			<td class="text-center"> {{pagos.1}} </th>	        			
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center"> Vivienda</th>
+	        			<td class="text-center"> {{pagos.2}} </th>	        			
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center">MP</th>
+	        			<td class="text-center"> {{pagos.3}} </th>	        			
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center"> EPS</th>
+	        			<td class="text-center">{{pagos.4}} </th>	        			
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center"> EME</th>
+	        			<td class="text-center"> {{pagos.5}} </th>	        			
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center"> Homecare</th>
+	        			<td class="text-center"> {{pagos.6}} </td>	        			
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center">Seguros</th>
+	        			<td class="text-center"> {{pagos.7}} </td>	        			
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center"> Solidaridad</th>
+	        			<td class="text-center"> {{pagos.8}} </td>	        			
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center"> Vida en Plenitud</th>
+	        			<td class="text-center"> {{pagos.9}} </td>	        			
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center"> Centro Vacacional</th>
+	        			<td class="text-center"> {{pagos.10}} </td>	        			
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center"> Agencia de Viajes</th>
+	        			<td class="text-center"> {{pagos.11}} </td>	        			
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center"> Gremial</th>
+	        			<td class="text-center"> {{pagos.12}} </td>	        			
+	        		</tr>
+	        		<tr>
+	        			<th class="bg-primary text-center">Total </th>
+	        			<td class="bg-primary text-center"> {{pagos.13}} </td>	        			
+	        		</tr>
+        		</table>
+		    	<center> 
+		    		<input class="btn btn-success" type="submit" value="Aprobar" name="apro" />	
+		    	</center>
+	            {%endif %}  
+		</form>
+	 	</div>
+        <div class="col-xs-3"> </div>         
+</div>
+
+<div class="col-xs-12" style="height:50px;"></div>
+
+<div class="row">
+        <div class="col-xs-3"> </div>
+        <div class="col-xs-6">   
+        
+
+        </div>
+        <div class="col-xs-3"> </div>
+</div>	
+ {%endblock%}

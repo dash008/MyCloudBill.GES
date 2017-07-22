@@ -1,0 +1,78 @@
+{% extends "controlpanel.html" %}
+{% load bootstrap %}
+{% load crispy_forms_tags %}
+
+{% if messages %}
+          
+                <div class="alert alert-success">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        <ul class="messages">
+                                {% for message in messages %}
+                                       <center>
+                                               <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                                               {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                                               {{ message }}
+                                               </p>
+                                       </center>
+                                {% endfor %}
+                        </ul>
+                </div>        
+{% endif %}
+
+{% block sidebar%}
+<div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li ><a href="/controlpanel">Control Panel <span class="sr-only">(current)</span></a></li>
+            {% for group in user.groups.all %}
+                {% if group.name == 'CoordinadorSI' %}
+                        <li><a href="/registrosolicitud">Realizar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                         <li><a href="/eliminarsolicitud">Cancelar Solicitudes</a></li>
+                {% elif group.name == 'ArqSoluciones' %}
+                        <li><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                        <li class="active" ><a href="/registrousuario">Registrar Usuario</a></li>
+                        <li><a href="/revisarfactura">Revisar Facturas</a></li>
+                {%elif group.name == 'JefeInfraestructura'%}          
+                        <li><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                        <!-- <li><a href="/registrousuario">Registrar Usuario</a></li> -->
+                        <li><a href="/facturamensualestimada">Revisar Facturas</a></li>
+                {%elif group.name == 'JefeTI'%}
+                        <li><a href="/registrosolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                        <li><a href="/registrousuario">Registrar Usuario</a></li>
+                        <li><a href=#>Revisar Facturas</a></li>
+                {%elif group.name == 'LiderInfraestructura'%}
+                        <li><a href="/registrosolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                        <li><a href="/registrousuario">Registrar Usuario</a></li>
+                        <li><a href=#>Revisar Facturas</a></li>
+                {% endif %}
+            {% endfor %}         
+            
+          </ul>          
+        </div> 
+{%endblock%}
+
+
+
+
+{% block content%}
+<div class="row">
+        <div class="col-xs-3"> </div>
+        <div class="col-xs-6"> 
+	<form action="" method="POST">
+	    	{% csrf_token %}                                 
+	    	{{ user_form| crispy}}	    	
+	    	{{ profile_form| crispy}}
+	    	<center> 
+	    		<input class="btn btn-primary" type="submit" value="Guardar" />    		
+	    		<input class="btn btn-danger" type="submit" value="Cancelar" />  
+	    	</center>
+	</form>
+	 </div>
+
+        <div class="col-xs-3"> </div>         
+</div> 
+{%endblock%}

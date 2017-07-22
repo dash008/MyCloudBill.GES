@@ -1,0 +1,136 @@
+{% extends "controlpanel.html" %}
+{% load bootstrap %}
+{% load crispy_forms_tags %}
+
+
+
+{% block title%}
+            <h2 class="sub-header"> Modificar Solicitudes</h2>
+{% endblock%}
+
+{% block content%}
+
+{% if messages %}
+          
+                <div class="alert alert-success">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        <ul class="messages">
+                                {% for message in messages %}
+                                       <center>
+                                               <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                                               {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                                               {{ message }}
+                                               </p>
+                                       </center>
+                                {% endfor %}
+                        </ul>
+                </div>
+        
+{% endif %}
+
+
+
+
+<div class="row">
+        <div class="col-xs-4"> </div>
+        <div class="col-md-5">
+                <form action= "." method="POST" class="navbar-form navbar-left" role="search" >
+                	{% csrf_token %} 
+                	 {% if not solicitud_form.instance %}
+                                {{form |crispy}}                                
+                	   <button type="submit" class="btn btn-default" name="search_btn">Buscar</button>
+                                {%endif%} 
+                </form>
+    </div>
+        <div class="col-xs-4"></div>         
+</div> 
+
+<div class="col-xs-12" style="height:50px;"></div>
+
+<div class="row">
+        <div class="col-xs-3"> </div>
+        <div class="col-xs-6"> 
+	<form action="" method="POST">
+	    	{% csrf_token %}
+
+	    	{%if my_group = "['JefeTI']" or my_group = "['JefeInfraestructura']" %}
+
+            {{solicitud_form.plataforma | as_crispy_field}}
+            {{solicitud_form.sistemaoperativo | as_crispy_field}}
+            {{solicitud_form.basededatos | as_crispy_field}}
+            {{solicitud_form.procesador | as_crispy_field}}
+            {{solicitud_form.procesamiento | as_crispy_field}}
+            {{solicitud_form.memoria | as_crispy_field}}
+            {{solicitud_form.almacenamiento | as_crispy_field}}
+            {{solicitud_form.backupimagenes | as_crispy_field}}
+            {{solicitud_form.tiempodeuso | as_crispy_field}}
+            {{solicitud_form.cantidaddeusuarios | as_crispy_field}}
+            {{solicitud_form.justificacion | as_crispy_field}}
+
+            {% else %}
+
+            {{solicitud_form | crispy}}
+            {%endif %}
+
+            {% if solicitud_form.instance %}  	    		
+	    	<center> 
+	    		<input class="btn btn-primary" type="submit" value="Guardar" name="save" />    		 
+	    	</center>
+            {%endif %}  
+	</form>
+	 </div>
+
+        <div class="col-xs-3"> </div>         
+</div>  
+
+{% endblock%} 
+
+{% block sidebar%}
+<div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li ><a href="/controlpanel">Control Panel <span class="sr-only">(current)</span></a></li>
+            
+            {% for group in user.groups.all %}
+                {% if group.name == 'CoordinadorSI' %}
+                        <li><a href="/registrosolicitud">Realizar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                         <li><a href="/eliminarsolicitud">Cancelar Solicitudes</a></li>
+                         <li><a href="/nuevorecurso">Agregar recursos</a></li>
+                {% elif group.name == 'ArqSoluciones' %}
+                        <li class="active" ><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                        <li><a href="/registrousuario">Registrar Usuario</a></li>
+                        <li><a href="/revisarfactura">Revisar Facturas</a></li>
+                {%elif group.name == 'JefeInfraestructura'%}          
+                        <li class="active" ><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                        <!-- <li><a href="/registrousuario">Registrar Usuario</a></li> -->
+                        <li><a href="/facturamensualestimada">Revisar Facturas</a></li>
+                {%elif group.name == 'JefeTI'%}                        
+                        <li ><a href="/consultasolicitud">Consultar Solicitudes</a></li>  
+                        <li><a href="/facturamensualestimada">Revisar Facturas</a></li>
+                        <li class="active"  ><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+                {%elif group.name == 'LiderInfraestructura'%}                       
+                        <div class="col-sm-3 col-md-2 sidebar">
+                            <ul class="nav nav-sidebar">
+                                <li><a href="/controlpanel">Control Panel <span class="sr-only">(current)</span></a></li>
+                                <li ><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                                <li><a href="#" id="btn-1" data-toggle="collapse" data-target="#submenu1" aria-expanded="false">Revisar Facturas</a>
+                                    <ul class="nav collapse" id="submenu1" role="menu" aria-labelledby="btn-1">
+                                    <li><a href="/registronegociacion" style="margin-left:20px;" >Registrar datos negociacion</a></li>
+                                    <li><a href="/facturaenlineabase" style="margin-left:20px;">Factura en linea base</a></li>
+                                    <li><a href="/facturamensualreal" style="margin-left:20px;">Factura mensual real</a></li>
+                                    </ul>
+                                </li>                       
+                                <li class="active" ><a href="/modificarsolicitud">Modificar Solicitud</a></li>                      
+                            </ul> 
+
+    </div>
+    
+    
+                {% endif %}
+            {% endfor %}         
+            
+          </ul>          
+        </div> 
+{%endblock%}

@@ -1,0 +1,66 @@
+{% extends "controlpanel.html" %}
+{% load staticfiles %}
+{% load bootstrap %}
+{% load crispy_forms_tags %}
+
+
+{% block title%}
+            <h2 class="sub-header"> Registrar datos de Negociacion </h2>
+{% endblock%}
+
+
+
+
+
+{% block sidebar%}
+	<div class="col-sm-3 col-md-2 sidebar">
+	          <ul class="nav nav-sidebar">
+		<li><a href="/controlpanel">Control Panel <span class="sr-only">(current)</span></a></li>
+              		<li ><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+              		<li class="active" ><a href="#" id="btn-1" data-toggle="collapse" data-target="#submenu1" aria-expanded="false">Revisar Facturas</a>
+		      <ul class="nav collapse" id="submenu1" role="menu" aria-labelledby="btn-1">
+		        <li   ><a href="/registronegociacion" style="margin-left:20px;" >Registrar datos negociacion</a></li>
+		        <li><a href="/facturaenlineabase" style="margin-left:20px;">Factura en linea base</a></li>
+		        <li><a href="/facturamensualestimada" style="margin-left:20px;">Factura mensual estimada</a></li>
+		        <li><a href="/facturamensualreal" style="margin-left:20px;">Factura mensual real</a></li>
+		      </ul>
+		</li>                    	
+                    	<li><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+                    	
+	          </ul> 
+
+        	</div>
+ {%endblock%}
+
+ {%block content%}
+
+
+
+ <div class="row">
+        <div class="col-xs-3"> </div>
+        <div class="col-xs-6"> 
+        	<div class="form-group">
+		<form action="" method="POST">
+		    	{% csrf_token %}
+		    	
+		    	{{negociacion_form.date| as_crispy_field}}	    	
+		    	{{negociacion_form.proovedor | as_crispy_field}}
+		    	{{negociacion_form.tiempo_de_servicio | as_crispy_field}}
+		    	{{negociacion_form.cargototal | as_crispy_field}}
+		    	{{negociacion_form.cargoinicial | as_crispy_field}}
+		    	{{negociacion_form.cargomeslineabase | as_crispy_field}}
+		    	
+
+		    	<center> 
+	    				<input class="btn btn-success" type="submit" value="Registrar" name="register_btn" />
+	    		</center>
+	    </form>
+	</div>
+	<div class="col-xs-3"> </div>	
+</div>
+
+<script type="text/javascript">
+           $("#id_date_time").datetimepicker({autoclose: true,language: 'en',format: 'yyyy-mm-dd hh:ii:ss'}).find('input').addClass("form-control");
+</script>    
+
+ {%endblock%}

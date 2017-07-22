@@ -1,0 +1,154 @@
+{% extends "controlpanel.html" %}
+{% load bootstrap %}
+{% load crispy_forms_tags %}
+
+
+
+{% block title%}
+            <h2 class="sub-header"> Agregar Recursos</h2>
+{% endblock%}
+
+{% block content%}
+
+{% if messages %}                        
+                {% for message in messages %}
+                {% if 'error' in message.tags %}                
+                    <div class="alert alert-danger">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        {{ message }}                
+                    </div>
+                {%  else %}                
+                    <div class="alert alert-{{ message.tags }}">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        {{ message }}
+                    </div>
+                {%endif%}
+                {% endfor %}    
+{% endif %}
+
+
+
+
+<div class="row">
+        <div class="col-xs-4"> </div>
+        <div class="col-md-5">
+                <form action= "." method="POST" class="navbar-form navbar-left" role="search" >
+                	{% csrf_token %} 
+                	 {% if not solicitud_form.instance %}
+                                {{form |crispy}}                                
+                	   <button type="submit" class="btn btn-default" name="search_btn">Buscar</button>
+                                {%endif%} 
+                </form>
+    </div>
+        <div class="col-xs-4"></div>         
+</div> 
+
+<div class="col-xs-12" style="height:50px;"></div>
+
+{% if solicitud_form.instance %} 
+<div class="row">
+        <div class="col-xs-3"> </div>
+        <div class="col-xs-6"> 
+    <form action="" method="POST">
+            {% csrf_token %}
+
+                            <table class="table  table-condensed table-bordered table-striped table-hover" width="900" >
+                                <tr>
+                                    <th>ID de Solicitud: </th>
+                                    <td style="text-align: right; vertical-align: middle;" >{{solicitud.id}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Plataforma: </th>
+                                    <td >{{solicitud.plataforma}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Sistema Operativo: </th>
+                                    <td>{{solicitud.sistemaoperativo}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Base de Datos: </th>
+                                    <td>{{solicitud.basededatos}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Procesador: </th>
+                                    <td>{{solicitud.procesador}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Vel. de Procesador: </th>
+                                    <td >{{solicitud.procesamiento}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Memoria RAM: </th>
+                                    <td >{{solicitud.memoria}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Capacidad de Almacenamiento: </th>
+                                    <td>{{solicitud.almacenamiento}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Backup de imagenes?: </th>
+                                    <td >{{solicitud.backupimagenes}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Cantidad de usuarios: </th>
+                                    <td>{{solicitud.cantidaddeusuarios}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Uso: </th>
+                                    <td>{{solicitud.justificacion}}</td>
+                                </tr>
+                            </table>
+
+                            {{nuevorecurso_form | crispy}}
+                              
+                              <div class="col-xs-12" style="height:50px;"></div>
+
+                            <center> 
+                                <input class="btn btn-primary" type="submit" value="Guardar" name="save_rsrce" />          
+                            </center>
+                            {%endif %}  
+    </form>
+     </div>
+
+        <div class="col-xs-3"> </div>         
+</div>  
+
+
+
+{% endblock%} 
+
+{% block sidebar%}
+<div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li ><a href="/controlpanel">Control Panel <span class="sr-only">(current)</span></a></li>
+            
+            {% for group in user.groups.all %}
+                {% if group.name == 'CoordinadorSI' %}
+                        <li><a href="/registrosolicitud">Realizar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                         <li><a href="/eliminarsolicitud">Cancelar Solicitudes</a></li>
+                         <li class="active" ><a href="/nuevorecurso">Agregar recursos</a></li>
+                {% elif group.name == 'ArqSoluciones' %}
+                        <li ><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                        <li><a href="/registrousuario">Registrar Usuario</a></li>
+                        <li><a href="/revisarfactura">Revisar Facturas</a></li>
+                {%elif group.name == 'JefeInfraestructura'%}          
+                        <li class="active" ><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                        <!-- <li><a href="/registrousuario">Registrar Usuario</a></li> -->
+                        <li><a href="/revisarfactura">Revisar Facturas</a></li>
+                {%elif group.name == 'JefeTI'%}                        
+                        <li ><a href="/consultasolicitud">Consultar Solicitudes</a></li>  
+                        <li><a href="/revisarfactura">Revisar Facturas</a></li>
+                        <li class="active"  ><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+                {%elif group.name == 'LiderInfraestructura'%}                       
+                        <li ><a href="/consultasolicitud">Consultar Solicitudes</a></li>  
+                        <li><a href="/revisarfactura">Revisar Facturas</a></li>
+                        <li class="active"><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+                {% endif %}
+            {% endfor %}         
+            
+          </ul>          
+        </div> 
+{%endblock%}

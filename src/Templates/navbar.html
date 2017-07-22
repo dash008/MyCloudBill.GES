@@ -1,0 +1,15 @@
+{% load staticfiles %}
+
+<nav>
+	<div class="container-fluid">
+	               <ul class="nav masthead-nav">
+		               <li ><a href="{% url 'home' %}">Inicio</a></li>
+		               <li><a href="{% url 'features' %}">Caracteristicas</a></li>
+		               <li><a href="{% url 'about' %}">Acerca De</a></li>		                
+	               </ul>          		
+    	
+               </div>
+               <img style="max-width:200px; margin-top: -3 px;" src="{% static 'img/NuevoLogo.png' %}">               
+
+               
+</nav>

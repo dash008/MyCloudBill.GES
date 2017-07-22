@@ -1,0 +1,264 @@
+{% extends "controlpanel.html" %}
+{% load bootstrap %}
+{% load crispy_forms_tags %}
+
+{% block title%}
+            <h2 class="sub-header">Factura Mensual Estimada</h2>
+{% endblock%}
+
+{% block sidebar%}
+	<div class="col-sm-3 col-md-2 sidebar">
+	          <ul class="nav nav-sidebar">
+			      <li><a href="/controlpanel">Control Panel <span class="sr-only">(current)</span></a></li>
+                  <li><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+	              <li ><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                  <li class="active"><a href="/facturamensualestimada">Revisar Facturas</a></li>
+
+	          </ul> 
+
+        	</div>
+ {%endblock%}
+
+ {%block content%}
+
+ {% if messages %}
+          <div class="col-md-4"> </div>
+                <div class="alert alert-success">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        <ul class="messages">
+                                {% for message in messages %}
+                                       <center>
+                                               <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                                               {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                                               {{ message }} <strong>{{numero_solicitud}}</strong>
+                                               </p>
+                                       </center>
+                                {% endfor %}
+                        </ul>
+                </div>
+        <div class="col-md-4"> </div>
+        {% endif %}
+
+ <div class="row">
+        <div class="col-xs-4"> </div>
+        <div class="col-md-5">
+        		
+                <form action= "." method="POST" class="navbar-form navbar-left" role="search" >
+                	{% csrf_token %} 
+                	{% if not solicitud_form.instance %}
+                     {{form |crispy}}                                
+                	   	<button type="submit" class="btn btn-default" name="search_btn">Buscar</button>
+                    {%endif%} 
+                </form>
+
+    </div>
+        <div class="col-xs-4"></div>         
+</div> 
+
+<div class="col-xs-12" style="height:50px;"></div>
+
+<div class="row">
+        <div class="col-xs-3"> </div>
+        <div class="col-xs-8"> 
+		<form action="" method="POST">
+		    	{% csrf_token %}
+	            {% if solicitud_form.instance %}	            
+				<table class="table  table-condensed table-bordered table-striped table-hover" width="900">
+	        		<tr>
+	        			<td class="text-center"> Periodo Facturado </td>
+	        			<td class="text-center"> {{periodos.0}} </td>
+	        		</tr>
+	        	</table>
+
+		    	<table class="table  table-condensed table-bordered table-striped table-hover" width="900">
+	        		
+	        		<tr>
+	        			<th class="text-center"> Tiempo de Servicio </th>
+	        			<td class="text-center"> {{solicitud_form.tiempodeuso}} </td>	        			
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center"> Cargo total a 12 meses</th>
+	        			<td class="text-center"> {{negociacion.cargototal}} </td>	        			
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center"> Cargo Inicial</th>
+	        			<td class="text-center"> {{negociacion.cargoinicial}} </td>	        			
+	        		</tr>
+	        		<tr>
+	        			<th class="warning text-center"> Cargo mes LB</th>
+	        			<td class="warning text-center"> {{negociacion.cargomeslineabase}} </td>	        			
+	        		</tr>	        		
+        		</table>
+
+        		<table class="table  table-condensed table-bordered table-striped table-hover" width="900">
+	        		<tr>
+	        			<th class="text-center"> Recurso </th>
+	        			<th class="text-center"> Cantidad </th>
+	        			<th class="text-center"> Costo por dia (USD) </th>
+	        		</tr>
+	        	{% for item in recursoscra %}
+	        		<tr>
+	        			<td class="text-center"> Procesador tipo {{item.procesador}}</td>
+	        			<td class="text-center"> {{item.numeroprocesadores}} </td>
+	        			<td class="text-center"> {{datos.9}} </td>
+	        		</tr>
+	        		<tr>
+	        			<td class="text-center"> Memoria RAM</td>
+	        			<td class="text-center"> {{item.memoria}} GBs</td>
+	        			<td class="text-center"> {{datos.10}} </td>
+	        		</tr>
+	        		<tr>
+	        			<td class="text-center"> Almacenamiento</td>
+	        			<td class="text-center"> {{item.almacenamiento}} GBs </td>
+	        			<td class="text-center"> {{datos.8}} </td>
+	        		</tr>
+	        		{% endfor %}
+                    {% for item in nuevos_recursos %}
+                    <tr>
+                        <th class="text-center" >Nuevos Recursos</th>
+                        <th class="text-center"> Tiempo de uso en meses</th>
+	        			<th class="text-center"> Costo por dia (USD) </th>
+                    </tr>
+	        		<tr>
+	        			<td class="text-center"> {{item.nuevo_recurso}}</td>
+	        			<td class="text-center"> {{item.tiempo_de_uso}} Mes(es)</td>
+	        			<td class="text-center">  </td>
+	        		</tr>
+	        		{% endfor %}
+	        		<tr>
+	        			<td class="text-center" colspan="2" > Subtotal dia </td>
+	        			<td class="text-center"> {{datos.11}} </td>
+	        		</tr>
+	        		<tr>
+	        			<td class="text-center" colspan="2" > Tiempo estimado </td>
+	        			<td class="text-center"> {{solicitud_form.tiempodeuso}} </td>
+	        		</tr>
+	        		<tr>
+	        			<td class="text-center" colspan="2" > Dias por mes </td>
+	        			<td class="text-center"> 30 </td>
+	        		</tr>
+	        		<tr>
+	        			<td class="text-center" colspan="2" > Total CRA mes estimado </td>
+	        			<td class="text-center"> {{datos.12}} </td>
+	        		</tr>
+	        		<tr>
+	        			<td class="text-center" colspan="2" > Total Nuevos Recursos </td>
+	        			<td class="text-center"> 0.00 </td>
+	        		</tr>
+	        		<tr>
+	        			<td class="text-center" colspan="2" > Total estimado CRA </td>
+	        			<td class="text-center"> {{datos.13}} </td>
+	        		</tr>	        		
+        		</table>
+        		<table class="table  table-condensed table-bordered table-striped table-hover" width="900">
+	        		<tr>
+	        			<th class="text-center" > Empresa </th>
+	        			<th class="text-center" > Linea Base </th>
+	        			<th class="text-center" > CRA </th>
+	        			<th class="text-center" > Total por empresa </th>
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center" > FINANCIERO </th>
+	        			<td class="text-center" > {{pagos.0}} </td>
+	        			<td class="text-center" > {{datos_cra_por_porcentaje.0}} </td>
+	        			<td class="text-center" > {{total_por_empresa.0}} </td>
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center" > SUGIRO </th>
+	        			<td class="text-center" > {{pagos.1}} </td>
+	        			<td class="text-center" > {{datos_cra_por_porcentaje.1}} </td>
+	        			<td class="text-center" > {{total_por_empresa.1}} </td>
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center" > VIVIENDA </th>
+	        			<td class="text-center" > {{pagos.2}} </td>
+	        			<td class="text-center" >{{datos_cra_por_porcentaje.2}}</td>
+	        			<td class="text-center" > {{total_por_empresa.2}} </td>
+	        			
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center" > MP </th>
+	        			<td class="text-center" > {{pagos.3}}</td>
+	        			<td class="text-center" > {{datos_cra_por_porcentaje.3}} </td>
+	        			<td class="text-center" > {{total_por_empresa.3}}</td>
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center" > EPS </th>
+	        			<td class="text-center" > {{pagos.4}}</td>
+	        			<td class="text-center" > {{datos_cra_por_porcentaje.4}}</td>
+	        			<td class="text-center" > {{total_por_empresa.4}}</td>
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center" > EME </th>
+	        			<td class="text-center" >{{pagos.5}} </td>
+	        			<td class="text-center" > {{datos_cra_por_porcentaje.5}} </td>
+	        			<td class="text-center" > {{total_por_empresa.5}} </td>
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center" > HOMECARE </th>
+	        			<td class="text-center" >{{pagos.6}} </td>
+	        			<td class="text-center" > {{datos_cra_por_porcentaje.6}} </td>
+	        			<td class="text-center" > {{total_por_empresa.6}} </td>
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center" > SEGUROS </th>
+	        			<td class="text-center" > {{pagos.7}} </td>
+	        			<td class="text-center" > {{datos_cra_por_porcentaje.7}}</td>
+	        			<td class="text-center" > {{total_por_empresa.7}}</td>
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center" > SOLIDARIDAD </th>
+	        			<td class="text-center" > {{pagos.8}} </td>
+	        			<td class="text-center" > {{datos_cra_por_porcentaje.8}} </td>
+	        			<td class="text-center" > {{total_por_empresa.8}} </td>
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center" > VIDA EN PLENITUD </th>
+	        			<td class="text-center" > {{pagos.9}} </td>
+	        			<td class="text-center" > {{datos_cra_por_porcentaje.9}} </td>
+	        			<td class="text-center" > {{total_por_empresa.9}} </td>
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center" > CENTRO VACACIONAL </th>
+	        			<td class="text-center" > {{pagos.10}} </td>
+	        			<td class="text-center" > {{datos_cra_por_porcentaje.10}}</td>
+	        			<td class="text-center" > {{total_por_empresa.10}} </td>
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center" > AGENCIA VIAJES </th>
+	        			<td class="text-center" > {{pagos.11}} </td>
+	        			<td class="text-center" > {{datos_cra_por_porcentaje.11}} </td>
+	        			<td class="text-center" > {{total_por_empresa.11}} </td>
+	        		</tr>
+	        		<tr>
+	        			<th class="text-center" > GREMIAL</th>
+	        			<td class="text-center" > {{pagos.12}} </td>
+	        			<td class="text-center" > {{datos_cra_por_porcentaje.12}}</td>
+	        			<td class="text-center" > {{total_por_empresa.12}} </td>
+	        		</tr>
+	        		<tr>
+	        			<th class="bg-primary text-center" > TOTAL</th>
+	        			<td class="text-center" > {{pagos.13}} </td>
+	        			<td class="text-center" > {{total_cra}}</td>
+	        			<td class="text-center" > {{gran_total}}</td>
+	        		</tr>
+	        	</table>
+	        		
+		        	{%if my_group = "['JefeTI']"%}
+			    	<center> 
+			    		<input class="btn btn-success" type="submit" value="Aprobar" name="approve_ti" />
+			    	</center>
+			    	
+			    	{%elif my_group = "['JefeInfraestructura']"%}
+			    	<center> 
+			    		<input class="btn btn-success" type="submit" value="Aprobar" name="approve_infra" />
+			    	</center>
+			    	
+			    	{%endif%}
+	            {%endif %} 
+		</form>
+		</div>	 	
+        <div class="col-xs-3"> </div> 
+</div>      
+
+{%endblock%}

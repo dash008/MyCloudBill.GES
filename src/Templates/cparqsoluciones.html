@@ -1,0 +1,108 @@
+{% extends "controlpanel.html" %}
+{% load bootstrap %}
+{% load crispy_forms_tags %}
+
+{% block title%}
+            <h2 class="sub-header"> Bienvenido Arquitecto De Soluciones</h2>
+{% endblock%}
+
+{% block sidebar%}
+<div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="/controlpanel">Control Panel <span class="sr-only">(current)</span></a></li>
+            {% for group in user.groups.all %}
+                {% if group.name == 'CoordinadorSI' %}
+                        <li><a href="/registrosolicitud">Realizar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes <span class="label label-info">{{query_results}}</a></li>
+                         <li><a href="/eliminarsolicitud">Cancelar Solicitudes</a></li>
+                {% elif group.name == 'ArqSoluciones' %}
+                        <li><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes <span class="label label-info">{{query_results}}</span></a></li>
+                        <li><a href="/registrousuario">Registrar Usuario</a></li>
+                        <li><a href="/revisarfactura">Revisar Facturas</a></li>
+                {%elif group.name == 'JefeInfraestructura'%}          
+                        <li><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                        <!-- <li><a href="/registrousuario">Registrar Usuario</a></li> -->
+                        <li><a href="/revisarfactura">Revisar Facturas</a></li>
+                {%elif group.name == 'JefeTI'%}
+                        <li><a href="/registrosolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                        <li><a href="/registrousuario">Registrar Usuario</a></li>
+                        <li><a href=#>Revisar Facturas</a></li>
+                {%elif group.name == 'LiderInfraestructura'%}
+                        <li><a href="/registrosolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                        <li><a href="/registrousuario">Registrar Usuario</a></li>
+                        <li><a href=#>Revisar Facturas</a></li>
+                {% endif %}
+            {% endfor %}         
+            
+          </ul>          
+        </div> 
+{%endblock%}
+
+{%block content%}
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+     count_windows = {{count_windows}};
+     count_linux = {{count_linux}};
+     count_Aix = {{count_Aix}};
+     count_i5 = {{count_i5}};
+
+     count_oracle ={{count_oracle}}
+     count_sql ={{count_sql}}
+     count_sybase={{count_sybase}}
+     count_iseries={{count_iseries}}
+
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+
+        var data1 = google.visualization.arrayToDataTable([
+          ['SO', 'Cantidad'],
+          ['Windows',    count_windows ],
+          ['Linux',      count_linux],
+          ['Aix',  count_Aix],
+          ['i5/SO', count_i5]        
+        ]);
+        var data2 = google.visualization.arrayToDataTable([
+          ['Base de Datos', 'Cantidad'],
+          ['Oracle',    count_oracle ],
+          ['SQL',      count_sql],
+          ['SYBASE',  count_sybase],
+          ['iSeries', count_iseries]        
+        ]);
+
+        var options1 = {
+          title: 'Las Plataformas mas solicitadas',
+          'width':600,
+          'height':600
+        };
+        var options2 = {
+          title: 'Las Bases De Datos mas solicitadas',
+          'width':600,
+          'height':600
+        };
+
+        var chart1 = new google.visualization.PieChart(document.getElementById('piechart'));
+
+        var chart2 = new google.visualization.PieChart(document.getElementById('piechart2'));
+
+        chart1.draw(data1, options1);
+        chart2.draw(data2, options2);
+      }
+    </script>
+
+    
+    <center>
+    <div id="piechart" ></div>
+
+    <div id="piechart2" ></div>
+    </center>
+    
+    
+    
+
+{%endblock%}

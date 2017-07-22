@@ -1,0 +1,386 @@
+{% extends "controlpanel.html" %}
+{% load bootstrap %}
+{% load crispy_forms_tags %}
+
+
+
+
+
+{% block title%}
+            <h2 class="sub-header"> Revisar Facturas</h2>
+{% endblock%}
+
+{% block content%}
+
+{% if messages %}                        
+                {% for message in messages %}
+                {% if 'error' in message.tags %}                
+                    <div class="alert alert-danger">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        {{ message }}                
+                    </div>
+                {%  else %}                
+                    <div class="alert alert-{{ message.tags }}">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        {{ message }}
+                    </div>
+                {%endif%}
+                {% endfor %}    
+{% endif %}
+
+
+
+
+<div class="row">
+        <div class="col-xs-4"> </div>
+        <div class="col-md-5">
+                <form action= "." method="POST" class="navbar-form navbar-left" role="search" >
+                	{% csrf_token %} 
+                                {% if not factura_form.instance%}
+                	       {{form |crispy}}
+                                    <button type="submit" class="btn btn-default" name="search_btn" >Buscar</button>
+                                {%endif%} 
+                	
+                </form>
+    </div>
+        <div class="col-xs-4"></div>         
+</div> 
+
+<div class="col-xs-12" style="height:50px;"></div>
+
+<div class="row">
+        <div class="col-xs-3"> </div>
+        <div class="col-xs-6"> 
+	<form action="" method="POST">
+	    	{% csrf_token %}                                  
+                                {% if factura_form.instance %}
+                                            <div class="col-xs-3"> </div>
+                                            <div class="col-xs-6">{{factura_form.estado|as_crispy_field}}</div>
+                                            <div class="col-xs-3"> </div>
+                                {%endif%}    
+                            
+                              <div class="col-xs-12" style="height: 30px;"></div>
+                              <h3 class="text-info"> Informacion </h3>
+		<table class="table table-condensed table-bordered table-striped table-hover" width="400" >
+    		
+    		<tr>
+    			<td  width="30%" class="text-center"> ID Solicitud</td>
+    			
+    			<td class="text-right">{{id_solicitud }}</td>
+        			
+
+    		</tr>
+    		<tr> 
+    			<td width="30%" class="text-center"> Tiempo de Servicio</td>
+    			{% if factura_form.instance %}
+    			<td class="text-right">{{factura_form.tiempodeservicio}}</td>
+                                                {% else %}
+                                                <td></td>
+                                                {%endif%}       			
+        			
+    		</tr>
+    		<tr>
+    			<td width="30%" class="text-center"> Cargo Total a 24 Meses</td>
+    			
+    			{% if factura_form.instance %}
+                                             <td class="text-right">{{factura_form.cargototal}}</td>
+                                             {% else %}
+                                            <td></td>
+                                            {%endif%}
+
+
+    		</tr>
+
+                                <tr>
+                                            <td width="30%" class="text-center"> Cargo Inicial unica vez</td>
+                            
+                                            {% if factura_form.instance %}
+                                             <td class="text-right">{{factura_form.cargoinicial}}</td>
+                                             {% else %}
+                                            <td></td>
+                                            {%endif%}
+
+                                </tr>
+
+                                <tr>
+                                            <td width="30%" class="text-center"> Cargo Mes linea base 23 Meses</td>
+                                            {% if factura_form.instance %}
+                                             <td class="text-right">{{factura_form.cargomeslineabase}}</td>
+                                             {% else %}
+                                            <td></td>
+                                            {%endif%}
+
+                                </tr>
+
+    		</table>
+
+                               <h3 class="text-info"> Factura </h3> 
+    		<table class="table table-condensed table-bordered table-striped table-hover" width="647" >
+    		<tr>	
+			<th width="30%" class="text-center"> Item  </th>
+			
+        			<th class="text-center">Costo</th>
+ 			 			
+    		</tr>
+    		<tr>	
+    			<td  width="30%"class="text-center"> Cargo Inicial</td>
+    			
+    			<td class="text-right"> 5000 </td>
+        			
+
+    		</tr>
+    		<tr>
+    			
+    			<td width="30%" class="text-center"> Cargo Mes CRA</td>
+    			<td class="text-right">{{factura_form.cargomescra }}</td>
+
+        			
+
+    		</tr>
+    		<tr>
+    			
+    			<td  width="30%" class="text-center"> Cargo Mes Nuevos</td>
+    			<td class="text-right">{{factura_form.cargomesnuevos }}</td>
+        			
+
+    		</tr>
+
+    		
+    		
+    		<tr>
+    			<td width="30%"  class="text-center"> Total a Pagar Mes</td>    			
+    			<td class="text-right">
+                                                <script type="text/javascript">
+                                                costo1 = {{total_mes}};
+                                                costo2 = 3260.87;
+                                                total = costo1 + costo2;
+                                                redondeado = total.toFixed(4);
+                                                document.write(redondeado);//print the result
+                                                </script>
+                                            </td>
+
+    		</tr>    		
+	</table>
+
+                <div class="col-xs-12" style="height: 30px;"></div>
+
+                <h3 class="text-info"> Detalles CRA </h3>
+
+                <table  class="table table-condensed table-bordered table-striped table-hover" width="647">
+                <tr>    
+                        <th width="30%" class="text-center">Items</th>            
+                        <th class="text-center">Costo/Hora</th> 
+                        <th class="text-center">Costo/Dia</th>
+                        <th class="text-center">Costo/Mes</th>                           
+                </tr>
+                <tr>    
+                        <th width="30%" class="text-center">{{exceso_procesadores}} Procesador(es)</th>            
+                        <td class="text-center">
+                            <script>//javascript code
+                                costo1={{costo_exc_procesadores}};//initialization of variables
+                                cantidad = {{exceso_procesadores}};                                
+                                total = costo1 * cantidad / 24 ;//perform sum operation
+                                redondeado = total.toFixed(6);
+                                document.write(redondeado);//print the result(+ is a concatenate operator)
+                            </script>                             
+                        </td> 
+                        <td class="text-center">
+                             <script>//javascript code
+                                 costo1 = {{costo_exc_procesadores}};
+                                 cantidad = {{exceso_procesadores}};
+                                 total = costo1 * cantidad;
+                                 redondeado = total.toFixed(2);
+                                document.write(redondeado);//print the result(+ is a concatenate operator)
+                             </script>
+                        </td>
+                        <td class="text-center">
+                            <script>//javascript code
+                                costo1={{costo_exc_procesadores}};//initialization of variables
+                                cantidad = {{exceso_procesadores}};                                
+                                total = costo1 * 30 * cantidad;//perform sum operation
+                                redondeado = total.toFixed(2);
+                                document.write(redondeado);//print the result(+ is a concatenate operator)
+                            </script>
+                        </td>                           
+                </tr>
+
+                <tr>    
+                        <th width="30%" class="text-center">{{exceso_memoria}} GB RAM</th>            
+                        <td class="text-center">                            
+                            <script>//javascript code
+                                costo1={{costo_exc_memoria}};//initialization of variables
+                                cantidad = {{exceso_memoria}};                                
+                                total = costo1 * cantidad / 24;//perform sum operation
+                                redondeado = total.toFixed(6);
+                                document.write(redondeado);//print the result(+ is a concatenate operator)
+                            </script>
+                        </td>
+
+                        <td class="text-center">
+                             <script>//javascript code
+                                 costo1 = {{costo_exc_memoria}};
+                                 cantidad = {{exceso_memoria}};
+                                 total = costo1 * cantidad;
+                                 redondeado = total.toFixed(2);
+                                document.write(redondeado);//print the result(+ is a concatenate operator)
+                             </script>
+                        </td>
+
+                        <td class="text-center">                            
+                            <script>//javascript code
+                                costo1={{costo_exc_memoria}};//initialization of variables
+                                cantidad = {{exceso_memoria}};                                
+                                total = costo1 * 30 * cantidad;//perform sum operation
+                                redondeado = total.toFixed(2);
+                                document.write(redondeado);//print the result(+ is a concatenate operator)
+                            </script>
+                        </td>                           
+                </tr>
+
+                <tr>    
+                        <th width="30%" class="text-center">{{exceso_almacenamiento}} GB Disco Duro </th>            
+                        <td class="text-center">
+                            <script>//javascript code
+                                costo1={{costo_exc_almacenamiento}};//initialization of variables
+                                cantidad = {{exceso_almacenamiento}};                               
+                                total = costo1 * cantidad / 24;//perform sum operation
+                                redondeado = total.toFixed(6);
+                                document.write(redondeado);//print the result(+ is a concatenate operator)
+                            </script>
+                        </td>
+
+                        <td class="text-center">
+                            <script>//javascript code
+                                 costo1 = {{costo_exc_almacenamiento}};
+                                 cantidad = {{exceso_almacenamiento}};
+                                 total = costo1 * cantidad;
+                                 redondeado = total.toFixed(2);
+                                document.write(redondeado);//print the result(+ is a concatenate operator)
+                             </script>
+                        </td>
+
+                        <td class="text-center">
+                            <script>//javascript code
+                                costo1={{costo_exc_almacenamiento}};//initialization of variables
+                                cantidad = {{exceso_almacenamiento}};                                
+                                total = costo1 * 30 * cantidad;//perform sum operation
+                                redondeado = total.toFixed(2);
+                                document.write(redondeado);//print the result(+ is a concatenate operator)
+                            </script>                            
+                        </td>                           
+                </tr>
+                <tr>    
+                        <th width="30%" class="text-center"> Subtotales </th>            
+                        <td class="text-center">                            
+                            <script>//javascript code
+                                costo1={{costo_exc_almacenamiento}};//initialization of variables
+                                costo2={{costo_exc_procesadores}};
+                                costo3={{costo_exc_memoria}};
+                                cantidad1 = {{exceso_almacenamiento}}
+                                cantidad2 = {{exceso_procesadores}}
+                                cantidad3 = {{exceso_memoria}}                                  
+                                total = (costo1*cantidad1 / 24) + (costo2*cantidad2 / 24)  +(costo3*cantidad3 / 24) ; 
+                                redondeado = total.toFixed(6);
+                                document.write(redondeado);//print the result(+ is a concatenate operator)
+                            </script>
+                        </td> 
+                        <td class="text-center"> 
+                            <script>//javascript code
+                                costo1={{costo_exc_almacenamiento}};//initialization of variables
+                                costo2={{costo_exc_memoria}};
+                                costo3 ={{costo_exc_procesadores}}
+                                cantidad1 = {{exceso_almacenamiento}}
+                                cantidad2 = {{exceso_procesadores}}
+                                cantidad3 = {{exceso_memoria}}
+                                sumatoria=(costo1*cantidad1)+(costo2 * cantidad2)+(costo3 * cantidad3);//perform sum operation
+                                redondeado = sumatoria.toFixed(2);
+                                document.write(redondeado);//print the result(+ is a concatenate operator)
+                            </script> 
+                        </td>
+                        <td class="text-center">
+                             <script>//javascript code
+                                costo1={{costo_exc_almacenamiento}};//initialization of variables
+                                costo2={{costo_exc_procesadores}};
+                                costo3={{costo_exc_memoria}};
+                                cantidad1 = {{exceso_almacenamiento}}
+                                cantidad2 = {{exceso_procesadores}}
+                                cantidad3 = {{exceso_memoria}}                                
+                                total = (costo1 * 30 * cantidad1) + (costo2 * 30 * cantidad2)  +(costo3 * 30 * cantidad3) ; 
+                                redondeado = total.toFixed(2);
+                                document.write(redondeado);//print the result
+                            </script>
+                        </td>                           
+                </tr> 
+
+                <tr>    
+                        <th class="text-center" > Estimacion a {{tiempo_estimado}}  mes(es) teniendo en cuenta un mes de 30 dias</th>            
+                        
+                        <td  colspan="3" style="text-align: center; vertical-align: middle;" >
+                            <script>//javascript code
+                                costo1 = {{mes_cra}};
+                                cantidad = {{tiempo_estimado}};
+                                total = costo1 * cantidad;
+                                redondeado = total.toFixed(2);
+                                document.write(redondeado);//print the result
+                            </script>
+                        </td>                           
+                </tr>     
+
+
+                </table>
+
+                <div class="col-xs-12" style="height: 30px;"></div>                                
+                                {%if my_group == "['JefeInfraestructura']" %}
+	    	<center>
+                                            <button type="submit" class="btn btn-primary" name="save_bill" >Pre-Aprobar</button>
+	    	</center>
+                                {%elif my_group == "['JefeTI']" %}
+                                <center>
+                                            <button type="submit" class="btn btn-primary" name="aprove_bill" >Aprobar</button>                                            
+                                </center>
+                                {%elif my_group == "['LiderInfraestructura']" %}
+                                <a href="/getFactura" target="_blank">
+                                            <input type="button" class="button" value="Download" />
+                                </a>                                 
+                                {%endif%}
+	</form>
+	 </div>
+
+        <div class="col-xs-3"> </div>         
+</div>  
+
+{% endblock%} 
+
+{% block sidebar%}
+<div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li ><a href="/controlpanel">Control Panel <span class="sr-only">(current)</span></a></li>
+            {% for group in user.groups.all %}
+                {% if group.name == 'CoordinadorSI' %}
+                        <li><a href="/registrosolicitud">Realizar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                         <li><a href="/eliminarsolicitud">Cancelar Solicitudes</a></li>
+                {% elif group.name == 'ArqSoluciones' %}
+                        <li><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                        <li><a href="/registrousuario">Registrar Usuario</a></li>
+                        <li class="active"  ><a href="/revisarfactura">Revisar Facturas</a></li>
+                {%elif group.name == 'JefeInfraestructura'%}          
+                        <li><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+                        <li><a href="/consultasolicitud">Consultar Solicitudes</a></li>
+                        <!-- <li><a href="/registrousuario">Registrar Usuario</a></li> -->
+                        <li class="active" ><a href="/revisarfactura">Revisar Facturas</a></li>
+                {%elif group.name == 'JefeTI'%}
+                        <li ><a href="/consultasolicitud">Consultar Solicitudes</a></li>  
+                        <li class="active" ><a href="/revisarfactura">Revisar Facturas</a></li>
+                        <li ><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+                {%elif group.name == 'LiderInfraestructura'%}                        
+                    <li ><a href="/consultasolicitud">Consultar Solicitudes</a></li>  
+                    <li class="active" ><a href="/revisarfactura">Revisar Facturas</a></li>
+                    <li><a href="/modificarsolicitud">Modificar Solicitud</a></li>
+                {% endif %}
+            {% endfor %}         
+            
+          </ul>          
+        </div> 
+{%endblock%}
